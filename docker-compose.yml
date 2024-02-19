@@ -1,0 +1,28 @@
+version: "3.4"
+
+services:
+  application.api:
+    image: ${DOCKER_REGISTRY-}application-api
+    container_name: application.api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5000
+      - ASPNETCORE_HTTPS_PORTS=5001
+    ports:
+      - 5000:5000
+      - 5001:5001
+
+  application.database:
+    image: postgres:16.1-alpine3.19
+    container_name: application.database
+    environment:
+      - POSTGRES_DB=application
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/application-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
