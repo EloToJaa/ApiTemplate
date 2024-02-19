@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Infrastructure.Authentication;
+using Quartz;
+using Infrastructure.BackgroundJobs.Logging;
 
 namespace Infrastructure;
 
@@ -25,6 +27,21 @@ public static class DependencyInjection
             .AddAuth(configuration);
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddBackgroundServices(
+        this IServiceCollection services)
+    {
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options =>
+        {
+            options.WaitForJobsToComplete = true;
+        });
+
+        services.ConfigureOptions<LoggingBackgroundJobSetup>();
 
         return services;
     }
