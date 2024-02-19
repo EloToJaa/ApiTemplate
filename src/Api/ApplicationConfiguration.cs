@@ -11,7 +11,7 @@ public static class ApplicationConfiguration
 
         app.UseSerilogRequestLogging();
 
-        app.UseExceptionHandler("/error");
+        app.UseExceptionHandler("/api/v1/Errors");
 
         app.UseHttpsRedirection();
 
