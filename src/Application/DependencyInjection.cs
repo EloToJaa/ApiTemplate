@@ -2,6 +2,7 @@
 using Application.Services;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -9,7 +10,7 @@ namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddApplication(this IServiceCollection services, ConfigurationManager configuration)
     {
         var assembly = Assembly.GetExecutingAssembly();
 
@@ -21,7 +22,7 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssembly(assembly);
 
-        services.AddServices();
+        services.AddServices(configuration);
 
         return services;
     }
