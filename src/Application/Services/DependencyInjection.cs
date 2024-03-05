@@ -1,13 +1,17 @@
 ﻿using Diacritics;
 using Microsoft.Extensions.DependencyInjection;
 using Application.Services.Slugify;
+using Application.Services.Image;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Services;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddServices(this IServiceCollection services)
+    public static IServiceCollection AddServices(this IServiceCollection services, ConfigurationManager configuration)
     {
+        services.AddImages(configuration);
+
         services.AddSingleton<IDiacriticsMapper, DefaultDiacriticsMapper>();
         services.AddSingleton<ISlugifyService, SlugifyService>();
 
