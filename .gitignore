@@ -4,3 +4,4 @@
 **/logs
 **/.containers
 **/.env
+**/secrets.json

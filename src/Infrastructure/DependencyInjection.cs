@@ -12,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Infrastructure.Authentication;
 using Quartz;
-using Infrastructure.BackgroundJobs.Logging;
 
 namespace Infrastructure;
 
@@ -40,8 +39,6 @@ public static class DependencyInjection
         {
             options.WaitForJobsToComplete = true;
         });
-
-        services.ConfigureOptions<LoggingBackgroundJobSetup>();
 
         return services;
     }

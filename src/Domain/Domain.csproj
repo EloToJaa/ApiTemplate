@@ -8,14 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ErrorOr" Version="1.10.0" />
-    <PackageReference Include="FluentValidation" Version="11.9.0" />
-    <PackageReference Include="MediatR" Version="12.2.0" />
+    <Compile Remove="Common\Errors\**" />
+    <Compile Remove="Common\ValueObjects\**" />
+    <EmbeddedResource Remove="Common\Errors\**" />
+    <EmbeddedResource Remove="Common\ValueObjects\**" />
+    <None Remove="Common\Errors\**" />
+    <None Remove="Common\ValueObjects\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Errors\" />
-    <Folder Include="Common\ValueObjects\" />
+    <PackageReference Include="ErrorOr" Version="1.10.0" />
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
 
 	<ItemGroup>
