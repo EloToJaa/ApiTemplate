@@ -8,9 +8,10 @@ RUN dotnet publish "./src/Api/Api.csproj" -c $BUILD_CONFIGURATION -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
+ARG ASPNETCORE_URLS=http://+:5000
+ARG ASPNETCORE_HTTP_PORTS=5000
 
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5000
 
 VOLUME /app/logs
 
