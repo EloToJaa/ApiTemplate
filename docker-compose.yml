@@ -23,6 +23,18 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./.containers/application-db:/var/lib/postgresql/data
+      - ./.containers/db:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
+  application.logs:
+    image: datalust/seq
+    container_name: application.logs
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - ./.containers/logs:/data
+    ports:
+      - 8080:80
+      - 5341:5341
+    restart: unless-stopped
