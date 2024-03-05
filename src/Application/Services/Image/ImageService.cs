@@ -37,15 +37,15 @@ public class ImageService : IImageService
         _logger.LogInformation("Direct upload response: {@response}", response);
 
         if (!response.IsSuccessStatusCode)
-            return Errors.Image.CannotUpload;
+            return ImageErrors.CannotUpload;
 
         var content = await response.Content.ReadAsStringAsync();
         if(content is null)
-            return Errors.Image.CannotUpload;
+            return ImageErrors.CannotUpload;
 
         var result = JsonSerializer.Deserialize<DirectUploadResponse>(content);
         if (result is null || !result.Success)
-            return Errors.Image.CannotUpload;
+            return ImageErrors.CannotUpload;
 
         return result;
     }

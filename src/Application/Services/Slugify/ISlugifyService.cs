@@ -1,7 +1,6 @@
-﻿namespace Application.Services.Slugify
+﻿namespace Application.Services.Slugify;
+
+public interface ISlugifyService
 {
-    public interface ISlugifyService
-    {
-        string GenerateSlug(string str);
-    }
+    string GenerateSlug(string str);
 }
