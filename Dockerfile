@@ -13,12 +13,8 @@ EXPOSE 8080
 EXPOSE 8081
 
 VOLUME /app/logs
-VOLUME /files
 
 WORKDIR /app
 COPY --from=build /app .
-
-WORKDIR /files
-COPY --from=build /files .
 
 ENTRYPOINT ["dotnet", "Api.dll"]

@@ -1,16 +1,15 @@
 ﻿using Api.Common.Http;
-using Asp.Versioning;
 using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
-namespace Api.Controllers.V1;
+namespace Api.Controllers;
 
 [ApiController]
 [Authorize]
-[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class ApiController : ControllerBase
 {
     protected IActionResult Problem(List<Error> errors)

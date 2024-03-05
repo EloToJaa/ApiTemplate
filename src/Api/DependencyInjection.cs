@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Api.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Api.Common.Settings;
+using Microsoft.Extensions.Configuration;
 
 namespace Api;
 
@@ -18,7 +19,7 @@ public static class DependencyInjection
         var corsSettings = new CorsSettings();
         configuration.Bind(CorsSettings.SectionName, corsSettings);
 
-        services.AddApiVersioning();
+        services.AddApiVersioning(configuration);
 
         services.AddControllers();
         services.AddSingleton<ProblemDetailsFactory, ApplicationProblemDetailsFactory>();
@@ -41,7 +42,9 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddApiVersioning(this IServiceCollection services)
+    private static IServiceCollection AddApiVersioning(
+        this IServiceCollection services,
+        ConfigurationManager configuration)
     {
         services
             .AddApiVersioning(options =>
@@ -57,6 +60,7 @@ public static class DependencyInjection
                 options.SubstituteApiVersionInUrl = true;
             });
 
+        services.Configure<SwaggerSettings>(configuration.GetSection(SwaggerSettings.SectionName));
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
