@@ -1,12 +1,19 @@
-﻿using ErrorOr;
-using Application.Services.Image.Response;
+﻿using Application.Services.Image.Response;
+using Refit;
 
 namespace Application.Services.Image;
 
 public interface IImageService
 {
-    Task<ErrorOr<DirectUploadResponse>> DirectUpload(bool requireSignedURLs = false);
-    Task<bool> IsSuccessfulyUploaded(Guid imageId);
-    Task<bool> DeleteImage(Guid imageId);
-    Uri GenerateImageUrl(Guid imageId, string variantName);
+    [Post("v2/direct_upload")]
+    Task<DirectUploadResponse?> DirectUpload([Body(BodySerializationMethod.UrlEncoded)] bool requireSignedURLs = false);
+
+    [Get("v1/{imageId}")]
+    Task<ImageDetailsResponse?> GetImage(Guid imageId);
+
+    [Delete("v1/{imageId}")]
+    Task<DeleteImageResponse?> DeleteImage(Guid imageId);
+
+    Uri GenerateImageUrl(string accountHash, Guid imageId, string variantName) =>
+        new Uri($"https://imagedelivery.net/{accountHash}/{imageId}/{variantName}");
 }
