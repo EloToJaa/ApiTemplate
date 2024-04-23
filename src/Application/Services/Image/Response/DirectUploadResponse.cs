@@ -16,3 +16,12 @@ public class DirectUploadResponse
     [JsonPropertyName("messages")]
     public List<MessageDetails> Messages { get; set; } = new(); 
 }
+
+public class DirectUploadResponseResult
+{
+    [JsonPropertyName("id")]
+    public required Guid Id { get; set; }
+
+    [JsonPropertyName("uploadURL")]
+    public required Uri UploadUrl { get; set; }
+}

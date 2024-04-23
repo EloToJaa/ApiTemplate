@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Application.Services.Image.Response;
 using System.Net.Http.Headers;
@@ -25,7 +24,7 @@ public class ImageService : IImageService
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.ApiToken);
     }
 
-    public async Task<ErrorOr<DirectUploadResponse>> DirectUpload(bool requireSignedURLs = false)
+    public async Task<DirectUploadResponse?> DirectUpload(bool requireSignedURLs = false)
     {
         var formData = new MultipartFormDataContent
         {
@@ -37,37 +36,33 @@ public class ImageService : IImageService
         _logger.LogInformation("Direct upload response: {@response}", response);
 
         if (!response.IsSuccessStatusCode)
-            return ImageErrors.CannotUpload;
+            return null;
 
         var content = await response.Content.ReadAsStringAsync();
-        if(content is null)
-            return ImageErrors.CannotUpload;
+        if (content is null)
+            return null;
 
         var result = JsonSerializer.Deserialize<DirectUploadResponse>(content);
-        if (result is null || !result.Success)
-            return ImageErrors.CannotUpload;
+        if (result is null)
+            return null;
 
         return result;
     }
 
-    public async Task<bool> IsSuccessfulyUploaded(Guid imageId)
+    public async Task<ImageDetailsResponse?> GetImage(Guid imageId)
     {
         var response = await _client.GetFromJsonAsync<ImageDetailsResponse>($"v1/{imageId}");
 
-        if(response is null || response.Result is null || !response.Success) return false;
-
-        return !response.Result.Draft;
+        return response;
     }
 
-    public async Task<bool> DeleteImage(Guid imageId)
+    public async Task<DeleteImageResponse?> DeleteImage(Guid imageId)
     {
         var response = await _client.DeleteFromJsonAsync<DeleteImageResponse>($"v1/{imageId}");
 
-        if (response is null) return false;
-
-        return response.Success;
+        return response;
     }
 
-    public Uri GenerateImageUrl(Guid imageId, string variantName) =>
-        new Uri($"https://imagedelivery.net/{_settings.AccountHash}/{imageId}/{variantName}");
+    public Uri GenerateImageUrl(string accountHash, Guid imageId, string variantName) =>
+        new Uri($"https://imagedelivery.net/{accountHash}/{imageId}/{variantName}");
 }
