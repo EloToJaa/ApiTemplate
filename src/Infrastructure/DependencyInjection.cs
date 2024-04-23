@@ -94,8 +94,8 @@ public static class DependencyInjection
                 options =>
                 {
                     options.Authority = "https://eloauth.com";
-                    options.ClientId = "170102032621961473@library";
-                    options.ClientSecret = "KNkKW8nx3rlEKOeHNUcPx80tZTP1uZTjJESfdA3kMEK7urhX3ChFukTMQrtjvG70";
+                    options.ClientId = "ID";
+                    options.ClientSecret = "SECRET";
                 });
             //.AddJwtBearer(options =>
             //{
