@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Infrastructure.Authentication;
 using Quartz;
+using Zitadel.Extensions;
 
 namespace Infrastructure;
 
@@ -77,30 +78,40 @@ public static class DependencyInjection
 
         services.AddSingleton(Options.Create(jwtSettings));
 
+        const string defaultScheme = "ZITADEL_BASIC";
+
         services
             .AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = defaultScheme;
+                options.DefaultSignInScheme = defaultScheme;
+                options.DefaultSignOutScheme = defaultScheme;
+                options.DefaultChallengeScheme = defaultScheme;
+                options.DefaultForbidScheme = defaultScheme;
             })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            .AddZitadelIntrospection(
+                defaultScheme,
+                options =>
                 {
-                    ValidateActor = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    RequireExpirationTime = true,
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
-                };
-            });
+                    options.Authority = "https://eloauth.com";
+                    options.ClientId = "ID";
+                    options.ClientSecret = "SECRET";
+                });
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateActor = true,
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        RequireExpirationTime = true,
+            //        ValidIssuer = jwtSettings.Issuer,
+            //        ValidAudience = jwtSettings.Audience,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+            //    };
+            //});
 
         services.AddAuthorization();
 
