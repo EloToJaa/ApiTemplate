@@ -3,13 +3,9 @@ using Application.Common.Interfaces.Services;
 using Infrastructure.Persistance.Interceptors;
 using Infrastructure.Persistance;
 using Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Infrastructure.Authentication;
 using Quartz;
 using Zitadel.Extensions;
@@ -20,7 +16,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfractructure(
         this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         services
             .AddPersistance(configuration)
@@ -46,7 +42,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddPersistance(
         this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         services
             .AddDbContext<ApplicationDbContext>(options =>
@@ -71,14 +67,17 @@ public static class DependencyInjection
 
     public static IServiceCollection AddAuth(
         this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
-        var jwtSettings = new JwtSettings();
-        configuration.Bind(JwtSettings.SectionName, jwtSettings);
+        services.AddOptions<ZitadelSettings>()
+            .Bind(configuration.GetSection(ZitadelSettings.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
-        services.AddSingleton(Options.Create(jwtSettings));
+        var zitadelSettings = new ZitadelSettings();
+        configuration.Bind(ZitadelSettings.SectionName, zitadelSettings);
 
-        const string defaultScheme = "ZITADEL_BASIC";
+        const string defaultScheme = ZitadelSettings.SchemeName;
 
         services
             .AddAuthentication(options =>
@@ -93,25 +92,10 @@ public static class DependencyInjection
                 defaultScheme,
                 options =>
                 {
-                    options.Authority = "https://eloauth.com";
-                    options.ClientId = "ID";
-                    options.ClientSecret = "SECRET";
+                    options.Authority = zitadelSettings.Authority;
+                    options.ClientId = zitadelSettings.ClientId;
+                    options.ClientSecret = zitadelSettings.ClientSecret;
                 });
-            //.AddJwtBearer(options =>
-            //{
-            //    options.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateActor = true,
-            //        ValidateIssuer = true,
-            //        ValidateAudience = true,
-            //        ValidateLifetime = true,
-            //        ValidateIssuerSigningKey = true,
-            //        RequireExpirationTime = true,
-            //        ValidIssuer = jwtSettings.Issuer,
-            //        ValidAudience = jwtSettings.Audience,
-            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
-            //    };
-            //});
 
         services.AddAuthorization();
 

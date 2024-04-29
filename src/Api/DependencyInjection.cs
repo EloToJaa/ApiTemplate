@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Api.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Api.Common.Settings;
-using Microsoft.Extensions.Configuration;
 
 namespace Api;
 
@@ -14,7 +13,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentation(
         this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         var corsSettings = new CorsSettings();
         configuration.Bind(CorsSettings.SectionName, corsSettings);
@@ -44,7 +43,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddApiVersioning(
         this IServiceCollection services,
-        ConfigurationManager configuration)
+        IConfiguration configuration)
     {
         services
             .AddApiVersioning(options =>
