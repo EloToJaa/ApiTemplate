@@ -8,7 +8,9 @@ namespace Application.Services;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, ConfigurationManager configuration)
+    public static IServiceCollection AddServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddImages(configuration);
 

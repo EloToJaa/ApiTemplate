@@ -28,7 +28,7 @@ Log.Logger =
 
 var app = builder.Build();
 {
-    app.MigrateDatabase();
+    //app.MigrateDatabase();
     app.UsePresentation(builder.Configuration);
 }
 

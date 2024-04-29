@@ -8,7 +8,7 @@ namespace Application.Services.Image;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddImages(this IServiceCollection services, ConfigurationManager configuration)
+    public static IServiceCollection AddImages(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<ImagesSettings>()
             .Bind(configuration.GetSection(ImagesSettings.SectionName))
@@ -17,9 +17,6 @@ public static class DependencyInjection
 
         var imagesSettings = new ImagesSettings();
         configuration.Bind(ImagesSettings.SectionName, imagesSettings);
-
-        //services.AddHttpClient<IImageService, ImageService>();
-        //services.AddTransient<IImageService, ImageService>();
 
         services.AddRefitClient<IImageService>()
             .ConfigureHttpClient(client =>
